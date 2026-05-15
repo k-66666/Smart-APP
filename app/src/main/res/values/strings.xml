@@ -1,0 +1,89 @@
+<resources>
+    <string name="app_name">智能环境监测</string>
+    
+    <!-- Connection -->
+    <string name="connection_status">连接状态: %1$s</string>
+    <string name="device_name">设备: %1$s</string>
+    <string name="connect">连接设备</string>
+    <string name="disconnect">断开连接</string>
+    <string name="select_device">选择设备</string>
+    <string name="scanning_devices">正在扫描设备...</string>
+    <string name="no_devices_found">未找到可用设备</string>
+    <string name="permission_required">需要授予权限才能使用蓝牙功能</string>
+    
+    <!-- Sensors -->
+    <string name="temperature">温度</string>
+    <string name="humidity">湿度</string>
+    <string name="air_quality">空气质量</string>
+    <string name="light_intensity">光照强度</string>
+    <string name="data_expired">数据过期</string>
+    
+    <!-- Controls -->
+    <string name="control_modules">控制模块</string>
+    <string name="display_module">显示模块</string>
+    <string name="alarm_module">声光报警</string>
+    <string name="driver_module">驱动模块</string>
+    
+    <!-- History -->
+    <string name="history_data">历史数据</string>
+    <string name="time_range">时间范围</string>
+    <string name="sensor_type">传感器类型</string>
+    <string name="refresh">刷新</string>
+    <string name="export_csv">导出CSV</string>
+    <string name="data_statistics">数据统计</string>
+    <string name="max_value">最大值</string>
+    <string name="min_value">最小值</string>
+    <string name="avg_value">平均值</string>
+    <string name="data_count">数据点数</string>
+    <string name="no_data_available">暂无数据</string>
+    <string name="data_exported">数据已导出到: %1$s</string>
+    <string name="export_failed">导出失败: %1$s</string>
+    
+    <!-- Time ranges -->
+    <string name="time_range_1h">最近1小时</string>
+    <string name="time_range_6h">最近6小时</string>
+    <string name="time_range_24h">最近24小时</string>
+    <string name="time_range_7d">最近7天</string>
+    <string name="time_range_30d">最近30天</string>
+    
+    <!-- Settings -->
+    <string name="settings">设置</string>
+    <string name="settings_title">应用设置</string>
+    <string name="data_refresh_interval">数据刷新间隔</string>
+    <string name="temperature_unit">温度单位</string>
+    <string name="theme">主题</string>
+    <string name="auto_reconnect">自动重连</string>
+    <string name="data_retention_days">历史数据保留天数</string>
+    <string name="save">保存</string>
+    <string name="cancel">取消</string>
+    
+    <!-- Units -->
+    <string name="unit_celsius">°C</string>
+    <string name="unit_percent">%%</string>
+    <string name="unit_aqi">AQI</string>
+    <string name="unit_lux">Lux</string>
+    
+    <!-- Messages -->
+    <string name="connected">已连接到 %1$s</string>
+    <string name="disconnected">已断开连接</string>
+    <string name="connection_failed">连接失败: %1$s</string>
+    <string name="command_success">%1$s 成功</string>
+    <string name="command_failed">控制失败: %1$s</string>
+    <string name="data_loaded">加载了 %1$d 条数据</string>
+    
+    <!-- Alarm -->
+    <string name="alarm_threshold">报警阈值</string>
+    <string name="upper_limit">上限</string>
+    <string name="lower_limit">下限</string>
+    <string name="threshold_saved">阈值已保存</string>
+    <string name="invalid_threshold">上限必须大于下限</string>
+    
+    <!-- WiFi -->
+    <string name="wifi_scan">WiFi 扫描</string>
+    <string name="wifi_not_available">设备不支持 WiFi</string>
+    <string name="wifi_scanning">正在扫描 WiFi...</string>
+    
+    <!-- Permissions -->
+    <string name="permission_rationale">需要授予权限才能使用蓝牙和 WiFi 功能</string>
+    <string name="settings_not_implemented">设置功能开发中</string>
+</resources>
