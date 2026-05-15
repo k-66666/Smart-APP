@@ -2,11 +2,10 @@ package com.example.mysmart;
 
 import android.Manifest;
 import android.app.AlertDialog;
-import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
-import android.view.MenuItem;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -45,15 +44,6 @@ public class MainActivity extends AppCompatActivity {
         bottomNavigationView = findViewById(R.id.bottomNavigation);
         setupBottomNavigation();
         
-        // 玻璃悬浮效果 (Android 12+)
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-            com.google.android.material.card.MaterialCardView dock = findViewById(R.id.bottomNavCard);
-            if (dock != null) {
-                // 降低模糊半径，防止内容糊掉
-                dock.setRenderEffect(android.graphics.RenderEffect.createBlurEffect(16f, 16f, android.graphics.Shader.TileMode.CLAMP));
-                dock.setCardBackgroundColor(getResources().getColor(R.color.glass_bg_light, getTheme()));
-            }
-        }
         
         // 默认显示监控页面
         if (savedInstanceState == null) {
@@ -97,8 +87,10 @@ public class MainActivity extends AppCompatActivity {
         
         android.app.Dialog dialog = new android.app.Dialog(this);
         dialog.setContentView(R.layout.dialog_connection);
-        dialog.getWindow().setBackgroundDrawable(new android.graphics.drawable.ColorDrawable(android.graphics.Color.TRANSPARENT));
-        dialog.getWindow().setLayout((int)(getResources().getDisplayMetrics().widthPixels * 0.9), android.view.ViewGroup.LayoutParams.WRAP_CONTENT);
+        if (dialog.getWindow() != null) {
+            dialog.getWindow().setBackgroundDrawable(new android.graphics.drawable.ColorDrawable(android.graphics.Color.TRANSPARENT));
+            dialog.getWindow().setLayout((int)(getResources().getDisplayMetrics().widthPixels * 0.9), android.view.ViewGroup.LayoutParams.WRAP_CONTENT);
+        }
         
         dialog.findViewById(R.id.cardBluetooth).setOnClickListener(v -> {
             dialog.dismiss();
@@ -153,76 +145,65 @@ public class MainActivity extends AppCompatActivity {
     
     private void scanBluetoothDevices() {
         viewModel.scanDevices();
-        
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("选择蓝牙设备");
-        builder.setMessage("正在扫描蓝牙设备...");
-        
-        AlertDialog dialog = builder.create();
-        
-        viewModel.getScannedDevices().observe(this, devices -> {
-            if (devices != null && !devices.isEmpty()) {
-                String[] deviceNames = new String[devices.size()];
-                for (int i = 0; i < devices.size(); i++) {
-                    deviceNames[i] = devices.get(i).getDisplayName();
-                }
-                
-                dialog.dismiss();
-                
-                new AlertDialog.Builder(this)
-                    .setTitle("选择设备")
-                    .setItems(deviceNames, (dialogInterface, which) -> {
-                        DeviceInfo selectedDevice = devices.get(which);
-                        viewModel.connectDevice(selectedDevice);
-                    })
-                    .setNegativeButton("取消", null)
-                    .show();
-            }
-        });
-        
-        viewModel.getIsScanning().observe(this, isScanning -> {
-            if (Boolean.FALSE.equals(isScanning)) {
-                dialog.dismiss();
-            }
-        });
-        
-        dialog.show();
+        showScanDialog("蓝牙设备扫描", "正在搜索已配对的蓝牙设备...", true);
     }
     
     private void scanWifiDevices() {
         viewModel.scanWifiDevices();
+        showScanDialog("WiFi 设备扫描", "正在扫描局域网设备...", false);
+    }
+    
+    private void showScanDialog(String title, String subtitle, boolean isBluetooth) {
+        android.app.Dialog dialog = new android.app.Dialog(this);
+        dialog.setContentView(R.layout.dialog_scan);
+        if (dialog.getWindow() != null) {
+            dialog.getWindow().setBackgroundDrawable(new android.graphics.drawable.ColorDrawable(android.graphics.Color.TRANSPARENT));
+            dialog.getWindow().setLayout((int)(getResources().getDisplayMetrics().widthPixels * 0.9), android.view.ViewGroup.LayoutParams.WRAP_CONTENT);
+        }
         
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("选择WiFi设备");
-        builder.setMessage("正在扫描WiFi设备...");
+        TextView tvTitle = dialog.findViewById(R.id.tvScanDialogTitle);
+        TextView tvSubtitle = dialog.findViewById(R.id.tvScanDialogSubtitle);
+        android.widget.ProgressBar progress = dialog.findViewById(R.id.progressScan);
+        androidx.recyclerview.widget.RecyclerView rvDevices = dialog.findViewById(R.id.rvScanDevices);
+        android.widget.LinearLayout layoutEmpty = dialog.findViewById(R.id.layoutEmpty);
+        android.widget.ImageView ivIcon = dialog.findViewById(R.id.ivScanIcon);
         
-        AlertDialog dialog = builder.create();
+        if (tvTitle != null) tvTitle.setText(title);
+        if (tvSubtitle != null) tvSubtitle.setText(subtitle);
+        
+        if (!isBluetooth) {
+            ivIcon.setImageResource(android.R.drawable.ic_menu_sort_by_size);
+            ivIcon.setColorFilter(0xFF30D158);
+        }
+        
+        rvDevices.setLayoutManager(new androidx.recyclerview.widget.LinearLayoutManager(this));
+        com.example.mysmart.adapter.ScanDeviceAdapter adapter = new com.example.mysmart.adapter.ScanDeviceAdapter(device -> {
+            dialog.dismiss();
+            viewModel.connectDevice(device);
+        });
+        rvDevices.setAdapter(adapter);
         
         viewModel.getScannedDevices().observe(this, devices -> {
             if (devices != null && !devices.isEmpty()) {
-                String[] deviceNames = new String[devices.size()];
-                for (int i = 0; i < devices.size(); i++) {
-                    deviceNames[i] = devices.get(i).getDisplayName();
-                }
-                
-                dialog.dismiss();
-                
-                new AlertDialog.Builder(this)
-                    .setTitle("选择设备")
-                    .setItems(deviceNames, (dialogInterface, which) -> {
-                        DeviceInfo selectedDevice = devices.get(which);
-                        viewModel.connectDevice(selectedDevice);
-                    })
-                    .setNegativeButton("取消", null)
-                    .show();
+                progress.setVisibility(android.view.View.GONE);
+                layoutEmpty.setVisibility(android.view.View.GONE);
+                rvDevices.setVisibility(android.view.View.VISIBLE);
+                if (tvSubtitle != null) tvSubtitle.setText("发现 " + devices.size() + " 个设备");
+                adapter.setDevices(devices);
             }
         });
         
         viewModel.getIsScanning().observe(this, isScanning -> {
             if (Boolean.FALSE.equals(isScanning)) {
-                dialog.dismiss();
+                progress.setVisibility(android.view.View.GONE);
+                if (adapter.getItemCount() == 0) {
+                    layoutEmpty.setVisibility(android.view.View.VISIBLE);
+                    if (tvSubtitle != null) tvSubtitle.setText("扫描完成");
+                }
             }
         });
+        
+        dialog.findViewById(R.id.btnCancelScan).setOnClickListener(v -> dialog.dismiss());
         
         dialog.show();
     }

@@ -21,7 +21,7 @@ import com.google.android.material.card.MaterialCardView;
 import com.google.android.material.switchmaterial.SwitchMaterial;
 
 /**
- * 监控页面Fragment
+ * 监控页面Fragment - 实时监控
  */
 public class MonitorFragment extends Fragment {
     
@@ -30,17 +30,21 @@ public class MonitorFragment extends Fragment {
     // UI组件
     private TextView tvConnectionStatus;
     private Button btnConnect;
+    
     private MaterialCardView cardTemperature;
     private MaterialCardView cardHumidity;
     private MaterialCardView cardAirQuality;
-    private MaterialCardView cardLightIntensity;
+    private MaterialCardView cardCO2;
+    private MaterialCardView cardAlarmAlert;
+    
     private TextView tvTemperature;
     private TextView tvHumidity;
     private TextView tvAirQuality;
-    private TextView tvLightIntensity;
-    private SwitchMaterial switchDisplay;
-    private SwitchMaterial switchAlarm;
-    private SwitchMaterial switchDriver;
+    private TextView tvCO2;
+    
+    private SwitchMaterial switchLight;
+    private SwitchMaterial switchUV;
+    private SwitchMaterial switchFan;
     
     @Nullable
     @Override
@@ -66,16 +70,17 @@ public class MonitorFragment extends Fragment {
         cardTemperature = view.findViewById(R.id.cardTemperature);
         cardHumidity = view.findViewById(R.id.cardHumidity);
         cardAirQuality = view.findViewById(R.id.cardAirQuality);
-        cardLightIntensity = view.findViewById(R.id.cardLightIntensity);
+        cardCO2 = view.findViewById(R.id.cardCO2);
+        cardAlarmAlert = view.findViewById(R.id.cardAlarmAlert);
         
         tvTemperature = view.findViewById(R.id.tvTemperature);
         tvHumidity = view.findViewById(R.id.tvHumidity);
         tvAirQuality = view.findViewById(R.id.tvAirQuality);
-        tvLightIntensity = view.findViewById(R.id.tvLightIntensity);
+        tvCO2 = view.findViewById(R.id.tvCO2);
         
-        switchDisplay = view.findViewById(R.id.switchDisplay);
-        switchAlarm = view.findViewById(R.id.switchAlarm);
-        switchDriver = view.findViewById(R.id.switchDriver);
+        switchLight = view.findViewById(R.id.switchLight);
+        switchUV = view.findViewById(R.id.switchUV);
+        switchFan = view.findViewById(R.id.switchFan);
     }
     
     private void setupObservers() {
@@ -99,16 +104,21 @@ public class MonitorFragment extends Fragment {
         });
         
         // 观察控制模块状态
+        // 映射：Display -> Light, Alarm -> UV/Alert UI, Driver -> Fan
         viewModel.getDisplayModuleOn().observe(getViewLifecycleOwner(), isOn -> {
-            switchDisplay.setChecked(Boolean.TRUE.equals(isOn));
+            switchLight.setChecked(Boolean.TRUE.equals(isOn));
         });
         
         viewModel.getAlarmModuleOn().observe(getViewLifecycleOwner(), isOn -> {
-            switchAlarm.setChecked(Boolean.TRUE.equals(isOn));
+            switchUV.setChecked(Boolean.TRUE.equals(isOn));
+            // 自动触发报警 UI 提示
+            if (cardAlarmAlert != null) {
+                cardAlarmAlert.setVisibility(Boolean.TRUE.equals(isOn) ? View.VISIBLE : View.GONE);
+            }
         });
         
         viewModel.getDriverModuleOn().observe(getViewLifecycleOwner(), isOn -> {
-            switchDriver.setChecked(Boolean.TRUE.equals(isOn));
+            switchFan.setChecked(Boolean.TRUE.equals(isOn));
         });
     }
     
@@ -123,19 +133,19 @@ public class MonitorFragment extends Fragment {
         });
         
         // 控制开关监听
-        switchDisplay.setOnCheckedChangeListener((buttonView, isChecked) -> {
+        switchLight.setOnCheckedChangeListener((buttonView, isChecked) -> {
             if (buttonView.isPressed()) {
                 viewModel.toggleDisplayModule();
             }
         });
         
-        switchAlarm.setOnCheckedChangeListener((buttonView, isChecked) -> {
+        switchUV.setOnCheckedChangeListener((buttonView, isChecked) -> {
             if (buttonView.isPressed()) {
                 viewModel.toggleAlarmModule();
             }
         });
         
-        switchDriver.setOnCheckedChangeListener((buttonView, isChecked) -> {
+        switchFan.setOnCheckedChangeListener((buttonView, isChecked) -> {
             if (buttonView.isPressed()) {
                 viewModel.toggleDriverModule();
             }
@@ -149,56 +159,56 @@ public class MonitorFragment extends Fragment {
                 tvConnectionStatus.setTextColor(requireContext().getColor(android.R.color.holo_green_dark));
                 btnConnect.setText("断开");
                 btnConnect.setEnabled(true);
-                switchDisplay.setEnabled(true);
-                switchAlarm.setEnabled(true);
-                switchDriver.setEnabled(true);
+                switchLight.setEnabled(true);
+                switchUV.setEnabled(true);
+                switchFan.setEnabled(true);
                 break;
             case CONNECTING:
                 tvConnectionStatus.setText("连接中...");
                 tvConnectionStatus.setTextColor(0xFF8E8E93);
                 btnConnect.setText("取消");
                 btnConnect.setEnabled(true);
-                switchDisplay.setEnabled(false);
-                switchAlarm.setEnabled(false);
-                switchDriver.setEnabled(false);
+                switchLight.setEnabled(false);
+                switchUV.setEnabled(false);
+                switchFan.setEnabled(false);
                 break;
             case ERROR:
                 tvConnectionStatus.setText("连接失败");
                 tvConnectionStatus.setTextColor(requireContext().getColor(android.R.color.holo_red_dark));
                 btnConnect.setText("重试");
                 btnConnect.setEnabled(true);
-                switchDisplay.setEnabled(false);
-                switchAlarm.setEnabled(false);
-                switchDriver.setEnabled(false);
+                switchLight.setEnabled(false);
+                switchUV.setEnabled(false);
+                switchFan.setEnabled(false);
                 break;
             default: // DISCONNECTED
                 tvConnectionStatus.setText("未连接");
                 tvConnectionStatus.setTextColor(0xFF8E8E93);
                 btnConnect.setText("连接");
                 btnConnect.setEnabled(true);
-                switchDisplay.setEnabled(false);
-                switchAlarm.setEnabled(false);
-                switchDriver.setEnabled(false);
+                switchLight.setEnabled(false);
+                switchUV.setEnabled(false);
+                switchFan.setEnabled(false);
                 break;
         }
     }
     
     private void updateSensorData(SensorData data) {
         // 更新温度
-        tvTemperature.setText(String.format("%.1f°C", data.getTemperature()));
+        tvTemperature.setText(String.format("%.1f", data.getTemperature()));
         setCardAccent(cardTemperature, data.getTemperature() < 15 || data.getTemperature() > 35);
         
         // 更新湿度
-        tvHumidity.setText(String.format("%.0f%%", data.getHumidity()));
+        tvHumidity.setText(String.format("%.0f", data.getHumidity()));
         setCardAccent(cardHumidity, data.getHumidity() < 20 || data.getHumidity() > 80);
         
         // 更新空气质量
         tvAirQuality.setText(String.format("%d", data.getAirQuality()));
         setCardAccent(cardAirQuality, data.getAirQuality() > 150);
         
-        // 更新光照强度
-        tvLightIntensity.setText(String.format("%d", data.getLightIntensity()));
-        setCardAccent(cardLightIntensity, false);
+        // 更新CO2浓度
+        tvCO2.setText(String.format("%d", data.getCo2Concentration()));
+        setCardAccent(cardCO2, data.getCo2Concentration() > 1000);
     }
     
     private void setCardAccent(MaterialCardView card, boolean isAlert) {

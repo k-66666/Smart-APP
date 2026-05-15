@@ -191,7 +191,7 @@
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 
-            <!-- 光照强度阈值 -->
+            <!-- CO2浓度阈值 -->
             <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -208,7 +208,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="☀️ 光照强度阈值 (Lux)"
+                        android:text="🌬️ CO2浓度阈值 (ppm)"
                         android:textSize="16sp"
                         android:textStyle="bold"
                         android:layout_marginBottom="12dp" />
@@ -216,23 +216,10 @@
                     <com.google.android.material.textfield.TextInputLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:hint="最低光照强度"
-                        android:layout_marginBottom="8dp">
+                        android:hint="最高CO2浓度">
 
                         <com.google.android.material.textfield.TextInputEditText
-                            android:id="@+id/etLightMin"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:inputType="number" />
-                    </com.google.android.material.textfield.TextInputLayout>
-
-                    <com.google.android.material.textfield.TextInputLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:hint="最高光照强度">
-
-                        <com.google.android.material.textfield.TextInputEditText
-                            android:id="@+id/etLightMax"
+                            android:id="@+id/etCo2Max"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:inputType="number" />

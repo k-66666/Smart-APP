@@ -67,9 +67,9 @@ public class HistoryActivity extends AppCompatActivity {
         30 * 24 * 60 * 60 * 1000L   // 30天
     };
     
-    private String[] sensorTypes = {"temperature", "humidity", "airQuality", "lightIntensity"};
-    private String[] sensorNames = {"温度", "湿度", "空气质量", "光照强度"};
-    private String[] sensorUnits = {"°C", "%", "AQI", "Lux"};
+    private String[] sensorTypes = {"temperature", "humidity", "airQuality", "co2Concentration"};
+    private String[] sensorNames = {"温度", "湿度", "空气质量", "二氧化碳浓度"};
+    private String[] sensorUnits = {"°C", "%", "AQI", "ppm"};
     
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -250,8 +250,8 @@ public class HistoryActivity extends AppCompatActivity {
                 case "airQuality":
                     value = data.getAirQuality();
                     break;
-                case "lightIntensity":
-                    value = data.getLightIntensity();
+                case "co2Concentration":
+                    value = data.getCo2Concentration();
                     break;
             }
             entries.add(new Entry(data.getTimestamp(), value));
@@ -292,8 +292,8 @@ public class HistoryActivity extends AppCompatActivity {
                 case "airQuality":
                     value = data.getAirQuality();
                     break;
-                case "lightIntensity":
-                    value = data.getLightIntensity();
+                case "co2Concentration":
+                    value = data.getCo2Concentration();
                     break;
             }
             
@@ -324,7 +324,7 @@ public class HistoryActivity extends AppCompatActivity {
             FileWriter writer = new FileWriter(file);
             
             // 写入表头
-            writer.append("时间,温度(°C),湿度(%),空气质量(AQI),光照强度(Lux)\n");
+            writer.append("时间,温度(°C),湿度(%),空气质量(AQI),CO2浓度(ppm)\n");
             
             // 写入数据
             SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
@@ -333,7 +333,7 @@ public class HistoryActivity extends AppCompatActivity {
                 writer.append(String.valueOf(data.getTemperature())).append(",");
                 writer.append(String.valueOf(data.getHumidity())).append(",");
                 writer.append(String.valueOf(data.getAirQuality())).append(",");
-                writer.append(String.valueOf(data.getLightIntensity())).append("\n");
+                writer.append(String.valueOf(data.getCo2Concentration())).append("\n");
             }
             
             writer.flush();

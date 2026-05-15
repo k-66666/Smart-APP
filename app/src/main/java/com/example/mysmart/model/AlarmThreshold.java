@@ -5,12 +5,11 @@ package com.example.mysmart.model;
  */
 public class AlarmThreshold {
     private float temperatureMin = 15.0f;
-    private float temperatureMax = 30.0f;
-    private float humidityMin = 30.0f;
-    private float humidityMax = 70.0f;
+    private float temperatureMax = 35.0f;
+    private float humidityMin = 20.0f;
+    private float humidityMax = 80.0f;
     private int airQualityMax = 150;
-    private int lightIntensityMin = 100;
-    private int lightIntensityMax = 5000;
+    private int co2Max = 1000;
     
     public AlarmThreshold() {
     }
@@ -56,20 +55,12 @@ public class AlarmThreshold {
         this.airQualityMax = airQualityMax;
     }
     
-    public int getLightIntensityMin() {
-        return lightIntensityMin;
+    public int getCo2Max() {
+        return co2Max;
     }
     
-    public void setLightIntensityMin(int lightIntensityMin) {
-        this.lightIntensityMin = lightIntensityMin;
-    }
-    
-    public int getLightIntensityMax() {
-        return lightIntensityMax;
-    }
-    
-    public void setLightIntensityMax(int lightIntensityMax) {
-        this.lightIntensityMax = lightIntensityMax;
+    public void setCo2Max(int co2Max) {
+        this.co2Max = co2Max;
     }
     
     /**
@@ -78,7 +69,7 @@ public class AlarmThreshold {
     public boolean isValid() {
         return temperatureMax > temperatureMin &&
                humidityMax > humidityMin &&
-               lightIntensityMax > lightIntensityMin &&
+               co2Max > 0 &&
                airQualityMax > 0;
     }
 }

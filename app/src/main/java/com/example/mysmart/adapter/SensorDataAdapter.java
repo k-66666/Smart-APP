@@ -78,9 +78,9 @@ public class SensorDataAdapter extends RecyclerView.Adapter<SensorDataAdapter.Vi
                     statusColor = android.R.color.holo_red_dark;
                 }
                 break;
-            case "lightIntensity":
-                value = String.format("%d Lux", data.getLightIntensity());
-                if (data.getLightIntensity() < 100 || data.getLightIntensity() > 5000) {
+            case "co2Concentration":
+                value = String.format("%d ppm", data.getCo2Concentration());
+                if (data.getCo2Concentration() > 1000) {
                     status = "异常";
                     statusColor = android.R.color.holo_red_dark;
                 }

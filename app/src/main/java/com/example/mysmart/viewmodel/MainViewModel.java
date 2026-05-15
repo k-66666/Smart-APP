@@ -129,25 +129,25 @@ public class MainViewModel extends AndroidViewModel {
     }
     
     /**
-     * 控制显示模块
+     * 控制风扇（映射到DRIVER模块）
      */
-    public void toggleDisplayModule() {
-        boolean newState = !Boolean.TRUE.equals(displayModuleOn.getValue());
-        ControlCommand command = newState ? ControlCommand.DISPLAY_ON : ControlCommand.DISPLAY_OFF;
+    public void toggleDriverModule() {
+        boolean newState = !Boolean.TRUE.equals(driverModuleOn.getValue());
+        ControlCommand command = newState ? ControlCommand.FAN_ON : ControlCommand.FAN_OFF;
         
         sendControlCommand(command, success -> {
             if (success) {
-                displayModuleOn.postValue(newState);
+                driverModuleOn.postValue(newState);
             }
         });
     }
     
     /**
-     * 控制声光报警模块
+     * 控制紫外线（映射到ALARM模块）
      */
     public void toggleAlarmModule() {
         boolean newState = !Boolean.TRUE.equals(alarmModuleOn.getValue());
-        ControlCommand command = newState ? ControlCommand.ALARM_ON : ControlCommand.ALARM_OFF;
+        ControlCommand command = newState ? ControlCommand.UV_ON : ControlCommand.UV_OFF;
         
         sendControlCommand(command, success -> {
             if (success) {
@@ -157,15 +157,15 @@ public class MainViewModel extends AndroidViewModel {
     }
     
     /**
-     * 控制驱动模块
+     * 控制照明（映射到DISPLAY模块）
      */
-    public void toggleDriverModule() {
-        boolean newState = !Boolean.TRUE.equals(driverModuleOn.getValue());
-        ControlCommand command = newState ? ControlCommand.DRIVER_ON : ControlCommand.DRIVER_OFF;
+    public void toggleDisplayModule() {
+        boolean newState = !Boolean.TRUE.equals(displayModuleOn.getValue());
+        ControlCommand command = newState ? ControlCommand.LIGHT_ON : ControlCommand.LIGHT_OFF;
         
         sendControlCommand(command, success -> {
             if (success) {
-                driverModuleOn.postValue(newState);
+                displayModuleOn.postValue(newState);
             }
         });
     }

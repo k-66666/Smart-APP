@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="24dp"
+    android:background="@drawable/dialog_bg_rounded">
+
+    <!-- 标题区域 -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:layout_marginBottom="6dp">
+
+        <ImageView
+            android:id="@+id/ivScanIcon"
+            android:layout_width="28dp"
+            android:layout_height="28dp"
+            android:src="@android:drawable/stat_sys_data_bluetooth"
+            app:tint="#0A84FF"
+            android:layout_marginEnd="12dp" />
+
+        <TextView
+            android:id="@+id/tvScanDialogTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="扫描设备"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:textColor="#1C1C1E" />
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/tvScanDialogSubtitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="正在搜索附近的蓝牙设备..."
+        android:textSize="14sp"
+        android:textColor="#8E8E93"
+        android:layout_marginBottom="20dp" />
+
+    <!-- 加载动画 -->
+    <ProgressBar
+        android:id="@+id/progressScan"
+        android:layout_width="match_parent"
+        android:layout_height="4dp"
+        android:indeterminate="true"
+        style="@android:style/Widget.ProgressBar.Horizontal"
+        android:indeterminateTint="#0A84FF"
+        android:layout_marginBottom="16dp" />
+
+    <!-- 设备列表 -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvScanDevices"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:maxHeight="300dp"
+        android:visibility="gone" />
+
+    <!-- 空状态 -->
+    <LinearLayout
+        android:id="@+id/layoutEmpty"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:padding="32dp"
+        android:visibility="gone">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="📡"
+            android:textSize="40sp"
+            android:layout_marginBottom="8dp" />
+
+        <TextView
+            android:id="@+id/tvEmptyMessage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="未发现设备"
+            android:textSize="15sp"
+            android:textColor="#8E8E93"
+            android:gravity="center" />
+    </LinearLayout>
+
+    <!-- 底部按钮 -->
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btnCancelScan"
+        android:layout_width="match_parent"
+        android:layout_height="44dp"
+        android:layout_marginTop="16dp"
+        android:text="取消"
+        app:cornerRadius="12dp"
+        style="@style/Widget.Material3.Button.OutlinedButton" />
+
+</LinearLayout>

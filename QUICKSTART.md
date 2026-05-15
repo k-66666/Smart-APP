@@ -1,189 +1,208 @@
-# 快速入门指南
+# 快速启动指南
 
-## 🚀 5分钟快速开始
+## 🚀 5分钟快速测试
 
-### 1. 打开项目
+### 方式1: Demo模式（无需硬件）
 
-在Android Studio中打开项目：
 ```
-File > Open > 选择 MySmart 文件夹
+1. 打开MySmart应用
+2. 点击底部"设备"图标
+3. 点击"添加设备"
+4. 输入:
+   - 设备名称: 测试设备
+   - 设备ID: demo
+   - 连接方式: WiFi
+5. 点击"连接"
+6. 返回"监控"页面
+7. 查看模拟数据（每2秒更新）
+8. 测试控制按钮（不会崩溃）
 ```
 
-### 2. 同步Gradle
+### 方式2: 蓝牙连接（需要蓝牙模块）
 
-等待Gradle自动同步完成（右下角会显示进度）。如果没有自动同步：
 ```
-File > Sync Project with Gradle Files
+1. 确保STM32连接蓝牙模块(HC-05/HC-06)
+2. 打开手机蓝牙
+3. 打开MySmart应用
+4. 授予蓝牙和位置权限
+5. 点击"扫描设备"
+6. 选择你的设备（如"HC-05"）
+7. 点击"连接"
+8. 查看实时数据
+9. 测试控制功能
 ```
 
-### 3. 准备设备
+### 方式3: WiFi连接（需要WiFi模块）
 
-**选项A: 使用真实Android设备（推荐）**
-1. 在设备上启用开发者选项
-2. 启用USB调试
-3. 用USB线连接到电脑
-4. 在设备上授权USB调试
+```
+1. 确保STM32和手机在同一WiFi
+2. 打开MySmart应用
+3. 点击"扫描WiFi设备"
+4. 选择STM32的IP地址
+5. 点击"连接"
+6. 查看实时数据
+7. 测试控制功能
+```
 
-**选项B: 使用Android模拟器**
-1. Tools > Device Manager
-2. 创建新设备（推荐Pixel 6, API 36）
-3. 启动模拟器
+## � 应用界面说明
 
-### 4. 运行应用
+### 监控页面（主页）
+- **连接状态**: 显示当前连接状态
+- **传感器数据**: 温度、湿度、TVOC、CO2
+- **控制开关**: 
+  - 风扇开关（对应Driver模块）
+  - 紫外线开关（对应Alarm模块）
+  - 照明开关（对应Display模块）
 
-点击工具栏的绿色运行按钮 ▶️ 或按 `Shift + F10`
+### 数据页面
+- 查看历史数据
+- 数据图表显示
+- 数据导出功能
 
-### 5. 授予权限
+### 设备页面
+- 扫描设备
+- 添加设备
+- 连接/断开设备
+- 设备列表管理
 
-首次启动时，应用会请求以下权限：
-- ✅ 蓝牙连接权限
-- ✅ 蓝牙扫描权限
-- ✅ 位置权限（蓝牙扫描需要）
-- ✅ 通知权限
+### 设置页面
+- 报警阈值设置
+- 数据保留时间
+- 应用信息
 
-**全部点击"允许"**
+## 🔧 STM32配置
 
-### 6. 配对蓝牙设备
+### 蓝牙模式
 
-在使用应用之前，需要先在系统设置中配对蓝牙设备：
+#### 硬件连接
+```
+STM32 PA2(TX) -> 蓝牙模块 RX
+STM32 PA3(RX) <- 蓝牙模块 TX
+VCC -> 3.3V或5V
+GND -> GND
+```
 
-1. 打开设备的 **设置 > 蓝牙**
-2. 确保蓝牙已开启
-3. 扫描并配对你的单片机设备
-4. 记住设备名称
+#### 代码配置
+```c
+// main.c
+BSP_USART2_Init(115200);  // 波特率115200
 
-### 7. 连接设备
-
-1. 在应用中点击 **"连接设备"** 按钮
-2. 从列表中选择你的设备
-3. 等待连接成功（状态显示"已连接"）
-
-### 8. 查看数据
-
-连接成功后，应用会自动显示：
-- 🌡️ 温度
-- 💧 湿度
-- 🌫️ 空气质量
-- ☀️ 光照强度
-
-数据每2秒更新一次。
-
-### 9. 控制模块
-
-使用底部的开关控制输出模块：
-- **显示模块**: 控制显示屏开关
-- **声光报警**: 控制报警器开关
-- **驱动模块**: 控制驱动器开关
-
----
-
-## 🔧 故障排除
-
-### 问题1: 无法扫描到设备
-
-**解决方案:**
-1. 确认蓝牙已开启
-2. 确认设备已在系统设置中配对
-3. 检查是否授予了所有权限
-4. 重启应用
-
-### 问题2: 连接失败
-
-**解决方案:**
-1. 确认设备在蓝牙范围内（<10米）
-2. 确认设备未被其他应用占用
-3. 尝试在系统设置中取消配对，然后重新配对
-4. 重启蓝牙
-
-### 问题3: 数据不更新
-
-**解决方案:**
-1. 检查连接状态是否为"已连接"
-2. 确认单片机正在发送数据
-3. 检查数据更新时间
-4. 尝试断开并重新连接
-
-### 问题4: Gradle同步失败
-
-**解决方案:**
-1. 检查网络连接
-2. 清理项目: `Build > Clean Project`
-3. 重新构建: `Build > Rebuild Project`
-4. 删除 `.gradle` 文件夹并重新同步
-
----
-
-## 📱 测试模式（无硬件）
-
-如果你没有实际的单片机设备，可以使用模拟数据进行测试：
-
-### 创建模拟数据生成器
-
-在 `MainActivity.java` 的 `onCreate` 方法末尾添加：
-
-```java
-// 仅用于测试 - 生成模拟数据
-if (BuildConfig.DEBUG) {
-    startMockDataGeneration();
-}
-
-private void startMockDataGeneration() {
-    new Handler().postDelayed(new Runnable() {
-        @Override
-        public void run() {
-            // 生成随机传感器数据
-            SensorData mockData = new SensorData(
-                20 + (float)(Math.random() * 10),  // 温度 20-30°C
-                50 + (float)(Math.random() * 20),  // 湿度 50-70%
-                50 + (int)(Math.random() * 100),   // 空气质量 50-150
-                500 + (int)(Math.random() * 1000)  // 光照 500-1500 Lux
-            );
-            
-            updateSensorData(mockData);
-            
-            // 每2秒生成一次
-            new Handler().postDelayed(this, 2000);
-        }
-    }, 1000);
+// 主循环
+while (1) {
+    APP_DataCollect(&g_system_state);
+    APP_InputScan(&g_system_state);
+    APP_WiFi_ReceiveCommand();  // 接收蓝牙命令
+    APP_ControlLogic_Process(&g_system_state);
+    APP_Display_Update(&g_system_state);
+    
+    // 每5秒发送一次数据
+    static uint32_t send_timer = 0;
+    send_timer += SYSTEM_LOOP_DELAY_MS;
+    if (send_timer >= 5000u) {
+        send_timer = 0;
+        APP_WiFi_SendData(&g_system_state);
+    }
+    
+    delay_ms(SYSTEM_LOOP_DELAY_MS);
 }
 ```
 
----
+### WiFi模式
+
+#### 配置WiFi参数
+```c
+// sys_config.h
+#define WIFI_SSID         "你的WiFi名称"
+#define WIFI_PASSWORD     "你的WiFi密码"
+#define WIFI_TCP_PORT     8080
+```
+
+#### 启用WiFi
+```c
+// main.c
+APP_WiFi_Init();  // 取消注释
+
+// 主循环中
+APP_WiFi_SendData(&g_system_state);  // 取消注释
+```
+
+## 🐛 常见问题快速解决
+
+### Q: Demo模式点击按钮崩溃？
+**A**: 已修复！重新编译安装即可。
+
+### Q: 扫描不到蓝牙设备？
+**A**: 
+1. 检查蓝牙是否开启
+2. 授予蓝牙和位置权限
+3. 确保蓝牙模块通电且可被发现
+
+### Q: 连接后无数据？
+**A**:
+1. 检查STM32是否正常运行
+2. 检查波特率是否为115200
+3. 使用串口助手测试蓝牙模块
+
+### Q: 控制命令无响应？
+**A**:
+1. 确认STM32已集成app_wifi_command.c
+2. 确认main.c中调用了APP_WiFi_ReceiveCommand()
+3. 检查蓝牙模块是否支持双向通信
+
+## 📊 数据格式示例
+
+### STM32发送（每5秒）
+```json
+{
+  "temp": 25.5,
+  "humi": 60.3,
+  "tvoc": 150,
+  "co2": 450,
+  "fan": 1,
+  "uv": 0,
+  "light": 1,
+  "alarm": 0
+}
+```
+
+### Android发送（控制命令）
+```json
+{"cmd":"control","fan":1}      // 开启风扇
+{"cmd":"control","uv":0}       // 关闭紫外线
+{"cmd":"control","light":2}    // 照明自动模式
+```
+
+## ✅ 验证清单
+
+### 基本功能
+- [ ] Demo模式可以连接
+- [ ] Demo模式控制按钮不崩溃
+- [ ] 可以扫描蓝牙设备
+- [ ] 可以连接蓝牙设备
+- [ ] 可以接收数据
+- [ ] 可以发送控制命令
+
+### 高级功能
+- [ ] WiFi连接正常
+- [ ] 数据持续更新
+- [ ] 历史数据记录
+- [ ] 报警功能正常
+- [ ] 设备状态同步
+
+## 📚 更多文档
+
+- [PROTOCOL.md](PROTOCOL.md) - 详细通信协议
+- [BLUETOOTH_GUIDE.md](BLUETOOTH_GUIDE.md) - 蓝牙使用指南
+- [TESTING_GUIDE.md](TESTING_GUIDE.md) - 完整测试流程
+- [VERIFICATION_CHECKLIST.md](VERIFICATION_CHECKLIST.md) - 功能验证清单
+- [STM32_INTEGRATION_GUIDE.md](../Stm32-ZNYG/STM32_INTEGRATION_GUIDE.md) - STM32集成指南
 
 ## 🎯 下一步
 
-现在你已经成功运行了应用！接下来可以：
+1. **测试Demo模式**: 验证应用基本功能
+2. **连接蓝牙**: 测试与实际硬件通信
+3. **验证数据**: 确认数据准确性
+4. **测试控制**: 验证控制命令生效
+5. **长期运行**: 测试稳定性
 
-1. **查看代码**: 了解MVVM架构的实现
-2. **修改UI**: 自定义界面样式和布局
-3. **添加功能**: 实现历史数据查询和图表显示
-4. **测试协议**: 验证与单片机的通信协议
-
----
-
-## 📚 相关文档
-
-- [README.md](README.md) - 完整项目说明
-- [design.md](.kiro/specs/smart-environment-monitor-app/design.md) - 详细设计文档
-- [requirements.md](.kiro/specs/smart-environment-monitor-app/requirements.md) - 需求文档
-- [DEVELOPMENT_LOG.md](.kiro/specs/smart-environment-monitor-app/DEVELOPMENT_LOG.md) - 开发日志
-
----
-
-## 💡 提示
-
-- 保持设备在蓝牙范围内
-- 定期清理旧数据以节省存储空间
-- 使用真实设备测试蓝牙功能（模拟器蓝牙支持有限）
-- 查看Logcat了解详细的运行日志
-
----
-
-## 🆘 需要帮助？
-
-如果遇到问题：
-1. 查看 [故障排除](#-故障排除) 部分
-2. 检查 Logcat 日志（标签: BluetoothConnMgr, SensorRepository）
-3. 查看 [README.md](README.md) 中的详细说明
-
-祝你使用愉快！🎉
+**祝你使用愉快！** 🎉

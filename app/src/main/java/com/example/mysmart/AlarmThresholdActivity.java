@@ -25,8 +25,7 @@ public class AlarmThresholdActivity extends AppCompatActivity {
     private TextInputEditText etHumidityMin;
     private TextInputEditText etHumidityMax;
     private TextInputEditText etAirQualityMax;
-    private TextInputEditText etLightMin;
-    private TextInputEditText etLightMax;
+    private TextInputEditText etCo2Max;
     private Button btnSave;
     
     @Override
@@ -51,8 +50,7 @@ public class AlarmThresholdActivity extends AppCompatActivity {
         etHumidityMin = findViewById(R.id.etHumidityMin);
         etHumidityMax = findViewById(R.id.etHumidityMax);
         etAirQualityMax = findViewById(R.id.etAirQualityMax);
-        etLightMin = findViewById(R.id.etLightMin);
-        etLightMax = findViewById(R.id.etLightMax);
+        etCo2Max = findViewById(R.id.etCo2Max);
         btnSave = findViewById(R.id.btnSave);
     }
     
@@ -63,13 +61,13 @@ public class AlarmThresholdActivity extends AppCompatActivity {
         
         // 加载温度阈值
         float tempMin = sharedPreferences.getFloat("temp_min", 15.0f);
-        float tempMax = sharedPreferences.getFloat("temp_max", 30.0f);
+        float tempMax = sharedPreferences.getFloat("temp_max", 35.0f);
         etTempMin.setText(String.valueOf(tempMin));
         etTempMax.setText(String.valueOf(tempMax));
         
         // 加载湿度阈值
-        float humidityMin = sharedPreferences.getFloat("humidity_min", 30.0f);
-        float humidityMax = sharedPreferences.getFloat("humidity_max", 70.0f);
+        float humidityMin = sharedPreferences.getFloat("humidity_min", 20.0f);
+        float humidityMax = sharedPreferences.getFloat("humidity_max", 80.0f);
         etHumidityMin.setText(String.valueOf(humidityMin));
         etHumidityMax.setText(String.valueOf(humidityMax));
         
@@ -77,11 +75,9 @@ public class AlarmThresholdActivity extends AppCompatActivity {
         int airQualityMax = sharedPreferences.getInt("air_quality_max", 150);
         etAirQualityMax.setText(String.valueOf(airQualityMax));
         
-        // 加载光照强度阈值
-        int lightMin = sharedPreferences.getInt("light_min", 100);
-        int lightMax = sharedPreferences.getInt("light_max", 5000);
-        etLightMin.setText(String.valueOf(lightMin));
-        etLightMax.setText(String.valueOf(lightMax));
+        // 加载CO2浓度阈值
+        int co2Max = sharedPreferences.getInt("co2_max", 1000);
+        etCo2Max.setText(String.valueOf(co2Max));
     }
     
     private void setupListeners() {
@@ -96,8 +92,7 @@ public class AlarmThresholdActivity extends AppCompatActivity {
             float humidityMin = Float.parseFloat(etHumidityMin.getText().toString());
             float humidityMax = Float.parseFloat(etHumidityMax.getText().toString());
             int airQualityMax = Integer.parseInt(etAirQualityMax.getText().toString());
-            int lightMin = Integer.parseInt(etLightMin.getText().toString());
-            int lightMax = Integer.parseInt(etLightMax.getText().toString());
+            int co2Max = Integer.parseInt(etCo2Max.getText().toString());
             
             // 验证输入
             if (tempMin >= tempMax) {
@@ -106,10 +101,6 @@ public class AlarmThresholdActivity extends AppCompatActivity {
             }
             if (humidityMin >= humidityMax) {
                 Toast.makeText(this, "湿度上限必须大于下限", Toast.LENGTH_SHORT).show();
-                return;
-            }
-            if (lightMin >= lightMax) {
-                Toast.makeText(this, "光照强度上限必须大于下限", Toast.LENGTH_SHORT).show();
                 return;
             }
             
@@ -121,8 +112,7 @@ public class AlarmThresholdActivity extends AppCompatActivity {
             editor.putFloat("humidity_min", humidityMin);
             editor.putFloat("humidity_max", humidityMax);
             editor.putInt("air_quality_max", airQualityMax);
-            editor.putInt("light_min", lightMin);
-            editor.putInt("light_max", lightMax);
+            editor.putInt("co2_max", co2Max);
             editor.apply();
             
             Toast.makeText(this, "阈值已保存", Toast.LENGTH_SHORT).show();

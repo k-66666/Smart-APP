@@ -21,7 +21,7 @@ import java.net.Socket;
 public class WifiConnectionManager implements ConnectionManager {
     
     private static final String TAG = "WifiConnMgr";
-    private static final int DEFAULT_PORT = 8888;
+    private static final int DEFAULT_PORT = 8080;  // 匹配STM32配置的端口
     private static final int CONNECT_TIMEOUT = 5000;
     private static final int HEARTBEAT_INTERVAL = 30000;
     
@@ -115,7 +115,11 @@ public class WifiConnectionManager implements ConnectionManager {
                 // 如果 IP 为 demo，则进入模拟模式
                 if ("demo".equalsIgnoreCase(device.getDeviceId()) || "127.0.0.1".equals(device.getDeviceId())) {
                     setState(ConnectionState.CONNECTED);
-                    mainHandler.post(() -> callback.onConnected());
+                    mainHandler.post(() -> {
+                        if (callback != null) {
+                            callback.onConnected();
+                        }
+                    });
                     
                     isReceiving = true;
                     receiveThread = new Thread(() -> {
@@ -127,11 +131,18 @@ public class WifiConnectionManager implements ConnectionManager {
                                     float temp = 20 + (float)(Math.random() * 10);
                                     float hum = 40 + (float)(Math.random() * 20);
                                     int aqi = 30 + (int)(Math.random() * 50);
-                                    int light = 200 + (int)(Math.random() * 800);
-                                    SensorData data = new SensorData(temp, hum, aqi, light);
-                                    mainHandler.post(() -> dataListener.onDataReceived(data));
+                                    int co2 = 400 + (int)(Math.random() * 600);
+                                    SensorData data = new SensorData(temp, hum, aqi, co2);
+                                    mainHandler.post(() -> {
+                                        if (dataListener != null) {
+                                            dataListener.onDataReceived(data);
+                                        }
+                                    });
                                 }
                             } catch (InterruptedException e) {
+                                break;
+                            } catch (Exception e) {
+                                Log.e(TAG, "Demo模式数据生成失败", e);
                                 break;
                             }
                         }
@@ -147,7 +158,11 @@ public class WifiConnectionManager implements ConnectionManager {
                 outputStream = socket.getOutputStream();
                 
                 setState(ConnectionState.CONNECTED);
-                mainHandler.post(() -> callback.onConnected());
+                mainHandler.post(() -> {
+                    if (callback != null) {
+                        callback.onConnected();
+                    }
+                });
                 
                 // 启动数据接收线程
                 startReceiving();
@@ -157,8 +172,22 @@ public class WifiConnectionManager implements ConnectionManager {
                 
             } catch (IOException e) {
                 Log.e(TAG, "WiFi连接失败", e);
-                notifyError("连接失败: " + e.getMessage());
                 cleanup();
+                setState(ConnectionState.ERROR);
+                mainHandler.post(() -> {
+                    if (callback != null) {
+                        callback.onError("连接失败: " + e.getMessage());
+                    }
+                });
+            } catch (Exception e) {
+                Log.e(TAG, "WiFi连接失败 - 未知错误", e);
+                cleanup();
+                setState(ConnectionState.ERROR);
+                mainHandler.post(() -> {
+                    if (callback != null) {
+                        callback.onError("连接失败: " + e.getMessage());
+                    }
+                });
             }
         }).start();
     }
@@ -184,8 +213,24 @@ public class WifiConnectionManager implements ConnectionManager {
             return;
         }
         
+        // Demo模式：直接返回成功
+        if (currentDevice != null && ("demo".equalsIgnoreCase(currentDevice.getDeviceId()) || "127.0.0.1".equals(currentDevice.getDeviceId()))) {
+            Log.d(TAG, "Demo模式：模拟发送命令成功");
+            if (callback != null) {
+                mainHandler.post(callback::onSuccess);
+            }
+            return;
+        }
+        
         new Thread(() -> {
             try {
+                if (outputStream == null) {
+                    if (callback != null) {
+                        mainHandler.post(() -> callback.onError("连接未建立"));
+                    }
+                    return;
+                }
+                
                 outputStream.write(command);
                 outputStream.flush();
                 
@@ -224,26 +269,40 @@ public class WifiConnectionManager implements ConnectionManager {
     private void startReceiving() {
         isReceiving = true;
         receiveThread = new Thread(() -> {
-            byte[] buffer = new byte[1024];
+            byte[] buffer = new byte[2048];
+            StringBuilder jsonBuffer = new StringBuilder();
             
             while (isReceiving && state == ConnectionState.CONNECTED) {
                 try {
                     int bytesRead = inputStream.read(buffer);
                     if (bytesRead > 0) {
-                        byte[] frame = new byte[bytesRead];
-                        System.arraycopy(buffer, 0, frame, 0, bytesRead);
+                        // 将接收到的字节转换为字符串并添加到缓冲区
+                        String received = new String(buffer, 0, bytesRead, "UTF-8");
+                        jsonBuffer.append(received);
                         
-                        // 解析数据
-                        try {
-                            SensorData data = ProtocolParser.parseSensorData(frame);
-                            if (dataListener != null) {
-                                mainHandler.post(() -> dataListener.onDataReceived(data));
+                        // 尝试从缓冲区提取完整的JSON对象
+                        String jsonString;
+                        while ((jsonString = ProtocolParser.extractJsonFromBuffer(jsonBuffer)) != null) {
+                            Log.d(TAG, "接收到数据: " + jsonString);
+                            
+                            // 解析JSON数据
+                            try {
+                                SensorData data = ProtocolParser.parseSensorData(jsonString);
+                                if (dataListener != null) {
+                                    mainHandler.post(() -> dataListener.onDataReceived(data));
+                                }
+                            } catch (ProtocolParser.ProtocolException e) {
+                                Log.e(TAG, "数据解析失败", e);
+                                if (dataListener != null) {
+                                    mainHandler.post(() -> dataListener.onError("数据解析失败: " + e.getMessage()));
+                                }
                             }
-                        } catch (ProtocolParser.ProtocolException e) {
-                            Log.e(TAG, "数据解析失败", e);
-                            if (dataListener != null) {
-                                mainHandler.post(() -> dataListener.onError("数据解析失败: " + e.getMessage()));
-                            }
+                        }
+                        
+                        // 如果缓冲区过大，清理旧数据
+                        if (jsonBuffer.length() > 4096) {
+                            Log.w(TAG, "缓冲区过大，清理旧数据");
+                            jsonBuffer.setLength(0);
                         }
                     }
                 } catch (IOException e) {
