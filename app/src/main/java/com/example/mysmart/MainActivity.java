@@ -49,7 +49,8 @@ public class MainActivity extends AppCompatActivity {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
             com.google.android.material.card.MaterialCardView dock = findViewById(R.id.bottomNavCard);
             if (dock != null) {
-                dock.setRenderEffect(android.graphics.RenderEffect.createBlurEffect(50f, 50f, android.graphics.Shader.TileMode.CLAMP));
+                // 降低模糊半径，防止内容糊掉
+                dock.setRenderEffect(android.graphics.RenderEffect.createBlurEffect(16f, 16f, android.graphics.Shader.TileMode.CLAMP));
                 dock.setCardBackgroundColor(getResources().getColor(R.color.glass_bg_light, getTheme()));
             }
         }
@@ -89,31 +90,32 @@ public class MainActivity extends AppCompatActivity {
     }
     
     public void showDeviceSelectionDialog() {
-        // 检查蓝牙权限
         if (!checkBluetoothPermissions()) {
             Toast.makeText(this, "请先授予权限", Toast.LENGTH_SHORT).show();
             return;
         }
         
-        // 显示设备选择对话框
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("选择连接方式");
+        android.app.Dialog dialog = new android.app.Dialog(this);
+        dialog.setContentView(R.layout.dialog_connection);
+        dialog.getWindow().setBackgroundDrawable(new android.graphics.drawable.ColorDrawable(android.graphics.Color.TRANSPARENT));
+        dialog.getWindow().setLayout((int)(getResources().getDisplayMetrics().widthPixels * 0.9), android.view.ViewGroup.LayoutParams.WRAP_CONTENT);
         
-        String[] options = {"蓝牙设备", "WiFi自动扫描", "手动输入WiFi IP", "取消"};
-        builder.setItems(options, (dialog, which) -> {
-            if (which == 0) {
-                // 蓝牙扫描
-                scanBluetoothDevices();
-            } else if (which == 1) {
-                // WiFi扫描
-                scanWifiDevices();
-            } else if (which == 2) {
-                // 手动输入
-                showManualWifiDialog();
-            }
+        dialog.findViewById(R.id.cardBluetooth).setOnClickListener(v -> {
+            dialog.dismiss();
+            scanBluetoothDevices();
         });
         
-        builder.show();
+        dialog.findViewById(R.id.cardWifiScan).setOnClickListener(v -> {
+            dialog.dismiss();
+            scanWifiDevices();
+        });
+        
+        dialog.findViewById(R.id.cardManualInput).setOnClickListener(v -> {
+            dialog.dismiss();
+            showManualWifiDialog();
+        });
+        
+        dialog.show();
     }
     
     private void showManualWifiDialog() {
