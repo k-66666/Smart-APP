@@ -112,6 +112,34 @@ public class WifiConnectionManager implements ConnectionManager {
         
         new Thread(() -> {
             try {
+                // 如果 IP 为 demo，则进入模拟模式
+                if ("demo".equalsIgnoreCase(device.getDeviceId()) || "127.0.0.1".equals(device.getDeviceId())) {
+                    setState(ConnectionState.CONNECTED);
+                    mainHandler.post(() -> callback.onConnected());
+                    
+                    isReceiving = true;
+                    receiveThread = new Thread(() -> {
+                        while (isReceiving && state == ConnectionState.CONNECTED) {
+                            try {
+                                Thread.sleep(2000);
+                                if (dataListener != null) {
+                                    // 模拟随机传感器数据
+                                    float temp = 20 + (float)(Math.random() * 10);
+                                    float hum = 40 + (float)(Math.random() * 20);
+                                    int aqi = 30 + (int)(Math.random() * 50);
+                                    int light = 200 + (int)(Math.random() * 800);
+                                    SensorData data = new SensorData(temp, hum, aqi, light);
+                                    mainHandler.post(() -> dataListener.onDataReceived(data));
+                                }
+                            } catch (InterruptedException e) {
+                                break;
+                            }
+                        }
+                    });
+                    receiveThread.start();
+                    return;
+                }
+
                 socket = new Socket();
                 socket.connect(new InetSocketAddress(device.getDeviceId(), DEFAULT_PORT), CONNECT_TIMEOUT);
                 

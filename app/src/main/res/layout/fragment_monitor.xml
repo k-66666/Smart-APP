@@ -3,53 +3,61 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:fillViewport="true">
+    android:clipToPadding="false"
+    android:paddingBottom="100dp"
+    android:fillViewport="true"
+    android:background="#F2F2F7">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="16dp">
+        android:padding="16dp"
+        android:paddingTop="56dp">
 
-        <!-- 标题 -->
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="实时监控"
-            android:textSize="24sp"
-            android:textStyle="bold"
-            android:layout_marginBottom="16dp" />
-
-        <!-- 连接状态卡片 -->
-        <com.google.android.material.card.MaterialCardView
+        <!-- 标题栏 -->
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp"
-            app:cardElevation="4dp"
-            app:cardCornerRadius="12dp">
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginBottom="20dp">
 
             <LinearLayout
-                android:layout_width="match_parent"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:padding="16dp">
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="实时监控"
+                    android:textSize="28sp"
+                    android:textStyle="bold"
+                    android:textColor="#1C1C1E"
+                    android:letterSpacing="-0.02" />
 
                 <TextView
                     android:id="@+id/tvConnectionStatus"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="未连接"
-                    android:textSize="16sp"
-                    android:textStyle="bold" />
-
-                <Button
-                    android:id="@+id/btnConnect"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:text="连接设备" />
+                    android:textSize="14sp"
+                    android:textColor="#8E8E93"
+                    android:layout_marginTop="2dp" />
             </LinearLayout>
-        </com.google.android.material.card.MaterialCardView>
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnConnect"
+                android:layout_width="wrap_content"
+                android:layout_height="40dp"
+                android:text="连接"
+                android:textSize="14sp"
+                app:cornerRadius="20dp"
+                app:backgroundTint="#0A84FF"
+                style="@style/Widget.Material3.Button" />
+        </LinearLayout>
 
         <!-- 传感器数据网格 -->
         <GridLayout
@@ -63,40 +71,60 @@
             <com.google.android.material.card.MaterialCardView
                 android:id="@+id/cardTemperature"
                 android:layout_width="0dp"
-                android:layout_height="120dp"
+                android:layout_height="140dp"
                 android:layout_columnWeight="1"
-                android:layout_margin="8dp"
-                app:cardElevation="4dp"
-                app:cardCornerRadius="12dp">
+                android:layout_margin="6dp"
+                app:cardElevation="0dp"
+                app:cardCornerRadius="20dp"
+                app:cardBackgroundColor="#FFFFFFFF"
+                app:strokeWidth="0dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:orientation="vertical"
-                    android:padding="16dp"
-                    android:gravity="center">
+                    android:padding="18dp"
+                    android:gravity="top">
 
-                    <TextView
-                        android:layout_width="wrap_content"
+                    <LinearLayout
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="🌡️"
-                        android:textSize="32sp" />
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical">
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="温度"
+                            android:textSize="13sp"
+                            android:textColor="#8E8E93" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="🌡️"
+                            android:textSize="18sp" />
+                    </LinearLayout>
 
                     <TextView
                         android:id="@+id/tvTemperature"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp"
+                        android:layout_marginTop="12dp"
                         android:text="--"
-                        android:textSize="24sp"
-                        android:textStyle="bold" />
+                        android:textSize="36sp"
+                        android:textStyle="bold"
+                        android:textColor="#1C1C1E" />
 
                     <TextView
+                        android:id="@+id/tvTempUnit"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="温度"
+                        android:text="摄氏度"
                         android:textSize="12sp"
-                        android:textColor="@android:color/darker_gray" />
+                        android:textColor="#8E8E93"
+                        android:layout_marginTop="2dp" />
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 
@@ -104,40 +132,59 @@
             <com.google.android.material.card.MaterialCardView
                 android:id="@+id/cardHumidity"
                 android:layout_width="0dp"
-                android:layout_height="120dp"
+                android:layout_height="140dp"
                 android:layout_columnWeight="1"
-                android:layout_margin="8dp"
-                app:cardElevation="4dp"
-                app:cardCornerRadius="12dp">
+                android:layout_margin="6dp"
+                app:cardElevation="0dp"
+                app:cardCornerRadius="20dp"
+                app:cardBackgroundColor="#FFFFFFFF"
+                app:strokeWidth="0dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:orientation="vertical"
-                    android:padding="16dp"
-                    android:gravity="center">
+                    android:padding="18dp"
+                    android:gravity="top">
 
-                    <TextView
-                        android:layout_width="wrap_content"
+                    <LinearLayout
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="💧"
-                        android:textSize="32sp" />
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical">
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="湿度"
+                            android:textSize="13sp"
+                            android:textColor="#8E8E93" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="💧"
+                            android:textSize="18sp" />
+                    </LinearLayout>
 
                     <TextView
                         android:id="@+id/tvHumidity"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp"
+                        android:layout_marginTop="12dp"
                         android:text="--"
-                        android:textSize="24sp"
-                        android:textStyle="bold" />
+                        android:textSize="36sp"
+                        android:textStyle="bold"
+                        android:textColor="#1C1C1E" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="湿度"
+                        android:text="相对湿度"
                         android:textSize="12sp"
-                        android:textColor="@android:color/darker_gray" />
+                        android:textColor="#8E8E93"
+                        android:layout_marginTop="2dp" />
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 
@@ -145,40 +192,59 @@
             <com.google.android.material.card.MaterialCardView
                 android:id="@+id/cardAirQuality"
                 android:layout_width="0dp"
-                android:layout_height="120dp"
+                android:layout_height="140dp"
                 android:layout_columnWeight="1"
-                android:layout_margin="8dp"
-                app:cardElevation="4dp"
-                app:cardCornerRadius="12dp">
+                android:layout_margin="6dp"
+                app:cardElevation="0dp"
+                app:cardCornerRadius="20dp"
+                app:cardBackgroundColor="#FFFFFFFF"
+                app:strokeWidth="0dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:orientation="vertical"
-                    android:padding="16dp"
-                    android:gravity="center">
+                    android:padding="18dp"
+                    android:gravity="top">
 
-                    <TextView
-                        android:layout_width="wrap_content"
+                    <LinearLayout
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="🌫️"
-                        android:textSize="32sp" />
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical">
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="空气质量"
+                            android:textSize="13sp"
+                            android:textColor="#8E8E93" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="🌫️"
+                            android:textSize="18sp" />
+                    </LinearLayout>
 
                     <TextView
                         android:id="@+id/tvAirQuality"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp"
+                        android:layout_marginTop="12dp"
                         android:text="--"
-                        android:textSize="24sp"
-                        android:textStyle="bold" />
+                        android:textSize="36sp"
+                        android:textStyle="bold"
+                        android:textColor="#1C1C1E" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="空气质量"
+                        android:text="AQI 指数"
                         android:textSize="12sp"
-                        android:textColor="@android:color/darker_gray" />
+                        android:textColor="#8E8E93"
+                        android:layout_marginTop="2dp" />
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 
@@ -186,79 +252,109 @@
             <com.google.android.material.card.MaterialCardView
                 android:id="@+id/cardLightIntensity"
                 android:layout_width="0dp"
-                android:layout_height="120dp"
+                android:layout_height="140dp"
                 android:layout_columnWeight="1"
-                android:layout_margin="8dp"
-                app:cardElevation="4dp"
-                app:cardCornerRadius="12dp">
+                android:layout_margin="6dp"
+                app:cardElevation="0dp"
+                app:cardCornerRadius="20dp"
+                app:cardBackgroundColor="#FFFFFFFF"
+                app:strokeWidth="0dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:orientation="vertical"
-                    android:padding="16dp"
-                    android:gravity="center">
+                    android:padding="18dp"
+                    android:gravity="top">
 
-                    <TextView
-                        android:layout_width="wrap_content"
+                    <LinearLayout
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="☀️"
-                        android:textSize="32sp" />
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical">
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="光照强度"
+                            android:textSize="13sp"
+                            android:textColor="#8E8E93" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="☀️"
+                            android:textSize="18sp" />
+                    </LinearLayout>
 
                     <TextView
                         android:id="@+id/tvLightIntensity"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp"
+                        android:layout_marginTop="12dp"
                         android:text="--"
-                        android:textSize="24sp"
-                        android:textStyle="bold" />
+                        android:textSize="36sp"
+                        android:textStyle="bold"
+                        android:textColor="#1C1C1E" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="光照强度"
+                        android:text="Lux"
                         android:textSize="12sp"
-                        android:textColor="@android:color/darker_gray" />
+                        android:textColor="#8E8E93"
+                        android:layout_marginTop="2dp" />
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
         </GridLayout>
 
-        <!-- 控制模块卡片 -->
+        <!-- 设备控制卡片 -->
         <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:cardElevation="4dp"
-            app:cardCornerRadius="12dp">
+            android:layout_marginTop="4dp"
+            app:cardElevation="0dp"
+            app:cardCornerRadius="20dp"
+            app:cardBackgroundColor="#FFFFFFFF"
+            app:strokeWidth="0dp">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:padding="16dp">
+                android:padding="20dp">
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="设备控制"
-                    android:textSize="18sp"
+                    android:textSize="17sp"
                     android:textStyle="bold"
-                    android:layout_marginBottom="16dp" />
+                    android:textColor="#1C1C1E"
+                    android:layout_marginBottom="8dp" />
 
                 <!-- 显示模块 -->
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="52dp"
                     android:orientation="horizontal"
-                    android:gravity="center_vertical"
-                    android:paddingVertical="12dp">
+                    android:gravity="center_vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="🖥️"
+                        android:textSize="22sp"
+                        android:layout_marginEnd="14dp" />
 
                     <TextView
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:text="显示模块"
-                        android:textSize="16sp" />
+                        android:textSize="16sp"
+                        android:textColor="#1C1C1E" />
 
                     <com.google.android.material.switchmaterial.SwitchMaterial
                         android:id="@+id/switchDisplay"
@@ -269,24 +365,31 @@
 
                 <View
                     android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:background="@android:color/darker_gray"
-                    android:alpha="0.2" />
+                    android:layout_height="0.5dp"
+                    android:background="#E5E5EA"
+                    android:layout_marginStart="36dp" />
 
                 <!-- 声光报警 -->
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="52dp"
                     android:orientation="horizontal"
-                    android:gravity="center_vertical"
-                    android:paddingVertical="12dp">
+                    android:gravity="center_vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="🔔"
+                        android:textSize="22sp"
+                        android:layout_marginEnd="14dp" />
 
                     <TextView
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:text="声光报警"
-                        android:textSize="16sp" />
+                        android:textSize="16sp"
+                        android:textColor="#1C1C1E" />
 
                     <com.google.android.material.switchmaterial.SwitchMaterial
                         android:id="@+id/switchAlarm"
@@ -297,24 +400,31 @@
 
                 <View
                     android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:background="@android:color/darker_gray"
-                    android:alpha="0.2" />
+                    android:layout_height="0.5dp"
+                    android:background="#E5E5EA"
+                    android:layout_marginStart="36dp" />
 
                 <!-- 驱动模块 -->
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="52dp"
                     android:orientation="horizontal"
-                    android:gravity="center_vertical"
-                    android:paddingVertical="12dp">
+                    android:gravity="center_vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="⚡"
+                        android:textSize="22sp"
+                        android:layout_marginEnd="14dp" />
 
                     <TextView
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:text="驱动模块"
-                        android:textSize="16sp" />
+                        android:textSize="16sp"
+                        android:textColor="#1C1C1E" />
 
                     <com.google.android.material.switchmaterial.SwitchMaterial
                         android:id="@+id/switchDriver"
@@ -322,6 +432,7 @@
                         android:layout_height="wrap_content"
                         android:enabled="false" />
                 </LinearLayout>
+
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
 

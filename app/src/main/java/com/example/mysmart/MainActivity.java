@@ -45,6 +45,15 @@ public class MainActivity extends AppCompatActivity {
         bottomNavigationView = findViewById(R.id.bottomNavigation);
         setupBottomNavigation();
         
+        // 玻璃悬浮效果 (Android 12+)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            com.google.android.material.card.MaterialCardView dock = findViewById(R.id.bottomNavCard);
+            if (dock != null) {
+                dock.setRenderEffect(android.graphics.RenderEffect.createBlurEffect(50f, 50f, android.graphics.Shader.TileMode.CLAMP));
+                dock.setCardBackgroundColor(getResources().getColor(R.color.glass_bg_light, getTheme()));
+            }
+        }
+        
         // 默认显示监控页面
         if (savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction()
@@ -90,7 +99,7 @@ public class MainActivity extends AppCompatActivity {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("选择连接方式");
         
-        String[] options = {"蓝牙设备", "WiFi设备", "取消"};
+        String[] options = {"蓝牙设备", "WiFi自动扫描", "手动输入WiFi IP", "取消"};
         builder.setItems(options, (dialog, which) -> {
             if (which == 0) {
                 // 蓝牙扫描
@@ -98,10 +107,32 @@ public class MainActivity extends AppCompatActivity {
             } else if (which == 1) {
                 // WiFi扫描
                 scanWifiDevices();
+            } else if (which == 2) {
+                // 手动输入
+                showManualWifiDialog();
             }
         });
         
         builder.show();
+    }
+    
+    private void showManualWifiDialog() {
+        android.widget.EditText editText = new android.widget.EditText(this);
+        editText.setHint("输入 IP 或输入 'demo' 体验模拟数据");
+        editText.setInputType(android.text.InputType.TYPE_CLASS_TEXT);
+        
+        new AlertDialog.Builder(this)
+            .setTitle("输入设备 IP 地址")
+            .setView(editText)
+            .setPositiveButton("连接", (dialog, which) -> {
+                String ip = editText.getText().toString().trim();
+                if (!ip.isEmpty()) {
+                    DeviceInfo device = new DeviceInfo(ip, "WiFi设备 (" + ip + ")", "WIFI");
+                    viewModel.connectDevice(device);
+                }
+            })
+            .setNegativeButton("取消", null)
+            .show();
     }
     
     private boolean checkBluetoothPermissions() {

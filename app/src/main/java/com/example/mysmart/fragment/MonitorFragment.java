@@ -114,8 +114,12 @@ public class MonitorFragment extends Fragment {
     
     private void setupListeners() {
         btnConnect.setOnClickListener(v -> {
-            // 跳转到设备连接页面
-            ((com.example.mysmart.MainActivity) requireActivity()).showDeviceSelectionDialog();
+            ConnectionState curState = viewModel.getConnectionState().getValue();
+            if (curState == ConnectionState.CONNECTED) {
+                viewModel.disconnect();
+            } else {
+                ((com.example.mysmart.MainActivity) requireActivity()).showDeviceSelectionDialog();
+            }
         });
         
         // 控制开关监听
@@ -139,41 +143,72 @@ public class MonitorFragment extends Fragment {
     }
     
     private void updateConnectionUI(ConnectionState state) {
-        tvConnectionStatus.setText(state.getDescription());
-        
-        boolean isConnected = state == ConnectionState.CONNECTED;
-        
-        btnConnect.setText(isConnected ? "已连接" : "连接设备");
-        btnConnect.setEnabled(!isConnected);
-        
-        switchDisplay.setEnabled(isConnected);
-        switchAlarm.setEnabled(isConnected);
-        switchDriver.setEnabled(isConnected);
+        switch (state) {
+            case CONNECTED:
+                tvConnectionStatus.setText("已连接");
+                tvConnectionStatus.setTextColor(requireContext().getColor(android.R.color.holo_green_dark));
+                btnConnect.setText("断开");
+                btnConnect.setEnabled(true);
+                switchDisplay.setEnabled(true);
+                switchAlarm.setEnabled(true);
+                switchDriver.setEnabled(true);
+                break;
+            case CONNECTING:
+                tvConnectionStatus.setText("连接中...");
+                tvConnectionStatus.setTextColor(0xFF8E8E93);
+                btnConnect.setText("取消");
+                btnConnect.setEnabled(true);
+                switchDisplay.setEnabled(false);
+                switchAlarm.setEnabled(false);
+                switchDriver.setEnabled(false);
+                break;
+            case ERROR:
+                tvConnectionStatus.setText("连接失败");
+                tvConnectionStatus.setTextColor(requireContext().getColor(android.R.color.holo_red_dark));
+                btnConnect.setText("重试");
+                btnConnect.setEnabled(true);
+                switchDisplay.setEnabled(false);
+                switchAlarm.setEnabled(false);
+                switchDriver.setEnabled(false);
+                break;
+            default: // DISCONNECTED
+                tvConnectionStatus.setText("未连接");
+                tvConnectionStatus.setTextColor(0xFF8E8E93);
+                btnConnect.setText("连接");
+                btnConnect.setEnabled(true);
+                switchDisplay.setEnabled(false);
+                switchAlarm.setEnabled(false);
+                switchDriver.setEnabled(false);
+                break;
+        }
     }
     
     private void updateSensorData(SensorData data) {
         // 更新温度
         tvTemperature.setText(String.format("%.1f°C", data.getTemperature()));
-        updateCardColor(cardTemperature, data.getTemperature(), 15, 30);
+        setCardAccent(cardTemperature, data.getTemperature() < 15 || data.getTemperature() > 35);
         
         // 更新湿度
         tvHumidity.setText(String.format("%.0f%%", data.getHumidity()));
-        updateCardColor(cardHumidity, data.getHumidity(), 30, 70);
+        setCardAccent(cardHumidity, data.getHumidity() < 20 || data.getHumidity() > 80);
         
         // 更新空气质量
         tvAirQuality.setText(String.format("%d", data.getAirQuality()));
-        updateCardColor(cardAirQuality, data.getAirQuality(), 0, 150);
+        setCardAccent(cardAirQuality, data.getAirQuality() > 150);
         
         // 更新光照强度
         tvLightIntensity.setText(String.format("%d", data.getLightIntensity()));
-        updateCardColor(cardLightIntensity, data.getLightIntensity(), 100, 5000);
+        setCardAccent(cardLightIntensity, false);
     }
     
-    private void updateCardColor(MaterialCardView card, float value, float min, float max) {
-        if (value < min || value > max) {
-            card.setCardBackgroundColor(requireContext().getColor(android.R.color.holo_red_light));
+    private void setCardAccent(MaterialCardView card, boolean isAlert) {
+        if (isAlert) {
+            card.setCardBackgroundColor(0xFFFFF2F2); // 淡红色警告背景
+            card.setStrokeColor(0xFFFF3B30);
+            card.setStrokeWidth(1);
         } else {
-            card.setCardBackgroundColor(requireContext().getColor(android.R.color.white));
+            card.setCardBackgroundColor(0xFFFFFFFF);
+            card.setStrokeWidth(0);
         }
     }
 }

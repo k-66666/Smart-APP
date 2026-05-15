@@ -21,6 +21,7 @@ public class SensorData {
         this.timestamp = System.currentTimeMillis();
     }
     
+    @androidx.room.Ignore
     public SensorData(float temperature, float humidity, int airQuality, int lightIntensity) {
         this.timestamp = System.currentTimeMillis();
         this.temperature = temperature;

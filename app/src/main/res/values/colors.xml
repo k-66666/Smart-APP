@@ -15,4 +15,13 @@
     <color name="yellow">#FFFFFF00</color>
     <color name="orange">#FFFFA500</color>
     <color name="dark_gray">#FF404040</color>
+    
+    <!-- Modern Glassmorphism & UI Colors -->
+    <color name="glass_bg_light">#D9FFFFFF</color> <!-- 85% white -->
+    <color name="glass_bg_dark">#D91E1E1E</color>  <!-- 85% dark gray -->
+    <color name="glass_border">#4DFFFFFF</color>  <!-- 30% white for borders -->
+    <color name="premium_bg">#F4F5F7</color>
+    <color name="premium_bg_dark">#121212</color>
+    <color name="accent_blue">#0A84FF</color>
+    <color name="accent_blue_dark">#007AFF</color>
 </resources>

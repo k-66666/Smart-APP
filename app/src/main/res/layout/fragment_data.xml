@@ -3,93 +3,105 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:fillViewport="true">
+    android:clipToPadding="false"
+    android:paddingBottom="100dp"
+    android:fillViewport="true"
+    android:background="#F2F2F7">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="16dp">
+        android:padding="16dp"
+        android:paddingTop="56dp">
 
         <!-- 标题 -->
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="历史数据"
-            android:textSize="24sp"
+            android:textSize="28sp"
             android:textStyle="bold"
-            android:layout_marginBottom="16dp" />
+            android:textColor="#1C1C1E"
+            android:layout_marginBottom="20dp" />
 
         <!-- 筛选卡片 -->
         <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp"
-            app:cardElevation="4dp"
-            app:cardCornerRadius="12dp">
+            android:layout_marginBottom="12dp"
+            app:cardElevation="0dp"
+            app:cardCornerRadius="20dp"
+            app:cardBackgroundColor="#FFFFFFFF"
+            app:strokeWidth="0dp">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:padding="16dp">
+                android:padding="20dp">
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="数据筛选"
-                    android:textSize="16sp"
+                    android:textSize="17sp"
                     android:textStyle="bold"
-                    android:layout_marginBottom="12dp" />
+                    android:textColor="#1C1C1E"
+                    android:layout_marginBottom="14dp" />
 
-                <!-- 时间范围 -->
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="时间范围"
-                    android:textSize="14sp"
+                    android:textSize="13sp"
+                    android:textColor="#8E8E93"
                     android:layout_marginBottom="4dp" />
 
                 <Spinner
                     android:id="@+id/spinnerTimeRange"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="12dp" />
+                    android:layout_height="44dp"
+                    android:layout_marginBottom="14dp"
+                    android:background="@drawable/spinner_bg" />
 
-                <!-- 传感器类型 -->
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="传感器类型"
-                    android:textSize="14sp"
+                    android:textSize="13sp"
+                    android:textColor="#8E8E93"
                     android:layout_marginBottom="4dp" />
 
                 <Spinner
                     android:id="@+id/spinnerSensorType"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="12dp" />
+                    android:layout_height="44dp"
+                    android:layout_marginBottom="14dp"
+                    android:background="@drawable/spinner_bg" />
 
-                <!-- 按钮组 -->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal">
 
-                    <Button
+                    <com.google.android.material.button.MaterialButton
                         android:id="@+id/btnRefresh"
                         android:layout_width="0dp"
-                        android:layout_height="wrap_content"
+                        android:layout_height="44dp"
                         android:layout_weight="1"
                         android:layout_marginEnd="8dp"
-                        android:text="刷新" />
+                        android:text="刷新数据"
+                        app:cornerRadius="12dp"
+                        style="@style/Widget.Material3.Button" />
 
-                    <Button
+                    <com.google.android.material.button.MaterialButton
                         android:id="@+id/btnExport"
                         android:layout_width="0dp"
-                        android:layout_height="wrap_content"
+                        android:layout_height="44dp"
                         android:layout_weight="1"
-                        android:text="导出"
+                        android:text="导出 CSV"
+                        app:cornerRadius="12dp"
                         style="@style/Widget.Material3.Button.OutlinedButton" />
                 </LinearLayout>
             </LinearLayout>
@@ -98,24 +110,27 @@
         <!-- 图表卡片 -->
         <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
-            android:layout_height="300dp"
-            android:layout_marginBottom="16dp"
-            app:cardElevation="4dp"
-            app:cardCornerRadius="12dp">
+            android:layout_height="280dp"
+            android:layout_marginBottom="12dp"
+            app:cardElevation="0dp"
+            app:cardCornerRadius="20dp"
+            app:cardBackgroundColor="#FFFFFFFF"
+            app:strokeWidth="0dp">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="vertical"
-                android:padding="16dp">
+                android:padding="20dp">
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="数据趋势"
-                    android:textSize="16sp"
+                    android:textSize="17sp"
                     android:textStyle="bold"
-                    android:layout_marginBottom="8dp" />
+                    android:textColor="#1C1C1E"
+                    android:layout_marginBottom="10dp" />
 
                 <com.github.mikephil.charting.charts.LineChart
                     android:id="@+id/lineChart"
@@ -129,22 +144,25 @@
         <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:cardElevation="4dp"
-            app:cardCornerRadius="12dp">
+            app:cardElevation="0dp"
+            app:cardCornerRadius="20dp"
+            app:cardBackgroundColor="#FFFFFFFF"
+            app:strokeWidth="0dp">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:padding="16dp">
+                android:padding="20dp">
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="统计信息"
-                    android:textSize="16sp"
+                    android:textSize="17sp"
                     android:textStyle="bold"
-                    android:layout_marginBottom="12dp" />
+                    android:textColor="#1C1C1E"
+                    android:layout_marginBottom="14dp" />
 
                 <GridLayout
                     android:layout_width="match_parent"
@@ -157,7 +175,6 @@
                         android:layout_height="wrap_content"
                         android:layout_columnWeight="1"
                         android:orientation="vertical"
-                        android:padding="8dp"
                         android:gravity="center">
 
                         <TextView
@@ -165,16 +182,17 @@
                             android:layout_height="wrap_content"
                             android:text="最大值"
                             android:textSize="12sp"
-                            android:textColor="@android:color/darker_gray" />
+                            android:textColor="#8E8E93" />
 
                         <TextView
                             android:id="@+id/tvMaxValue"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="--"
-                            android:textSize="18sp"
+                            android:textSize="22sp"
                             android:textStyle="bold"
-                            android:textColor="@android:color/holo_red_dark" />
+                            android:textColor="#FF3B30"
+                            android:layout_marginTop="4dp" />
                     </LinearLayout>
 
                     <LinearLayout
@@ -182,7 +200,6 @@
                         android:layout_height="wrap_content"
                         android:layout_columnWeight="1"
                         android:orientation="vertical"
-                        android:padding="8dp"
                         android:gravity="center">
 
                         <TextView
@@ -190,16 +207,17 @@
                             android:layout_height="wrap_content"
                             android:text="最小值"
                             android:textSize="12sp"
-                            android:textColor="@android:color/darker_gray" />
+                            android:textColor="#8E8E93" />
 
                         <TextView
                             android:id="@+id/tvMinValue"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="--"
-                            android:textSize="18sp"
+                            android:textSize="22sp"
                             android:textStyle="bold"
-                            android:textColor="@android:color/holo_blue_dark" />
+                            android:textColor="#0A84FF"
+                            android:layout_marginTop="4dp" />
                     </LinearLayout>
 
                     <LinearLayout
@@ -207,7 +225,6 @@
                         android:layout_height="wrap_content"
                         android:layout_columnWeight="1"
                         android:orientation="vertical"
-                        android:padding="8dp"
                         android:gravity="center">
 
                         <TextView
@@ -215,16 +232,17 @@
                             android:layout_height="wrap_content"
                             android:text="平均值"
                             android:textSize="12sp"
-                            android:textColor="@android:color/darker_gray" />
+                            android:textColor="#8E8E93" />
 
                         <TextView
                             android:id="@+id/tvAvgValue"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="--"
-                            android:textSize="18sp"
+                            android:textSize="22sp"
                             android:textStyle="bold"
-                            android:textColor="@android:color/holo_green_dark" />
+                            android:textColor="#30D158"
+                            android:layout_marginTop="4dp" />
                     </LinearLayout>
                 </GridLayout>
             </LinearLayout>
